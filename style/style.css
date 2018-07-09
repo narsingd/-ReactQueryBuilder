@@ -1,0 +1,24 @@
+/*@import url("react-sortable-tree/style.css"); */
+.tree {
+  float: left;
+  padding: 15px;
+  width: 100%;
+  height: 1000px;
+}
+
+.table-container {
+  padding: 20px
+}
+
+.rst__rowLabel {
+  width: 90%
+}
+
+.rst__nodeContent {
+  width: 90% !important
+}
+
+.rst__moveHandle, .rst__loadingHandle {
+    background: #70db70  !important;
+    background-image: url(url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zd…BkPSJNMTQgMjEuNGgxNC40Ii8+PHBhdGggZD0iTTE0IDI3LjFoMTQuNCIvPjwvZz4KPC9zdmc+) no-repeat center ) !important;
+}
