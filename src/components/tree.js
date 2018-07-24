@@ -1,58 +1,17 @@
 import React, { Component } from 'react';
 import QueryCondtion from './condition';
-import SortableTree, { addNodeUnderParent, removeNodeAtPath } from 'react-sortable-tree';
+import SortableTree, { addNodeUnderParent, removeNodeAtPath, changeNodeAtPath } from 'react-sortable-tree';
 // In your own app, you would need to use import styles once in the app
 // import 'react-sortable-tree/styles.css';
 
-const firstNames = [
-  'Abraham',
-  'Adam',
-  'Agnar',
-  'Albert',
-  'Albin',
-  'Albrecht',
-  'Alexander',
-  'Alfred',
-  'Alvar',
-  'Ander',
-  'Andrea',
-  'Arthur',
-  'Axel',
-  'Bengt',
-  'Bernhard',
-  'Carl',
-  'Daniel',
-  'Einar',
-  'Elmer',
-  'Eric',
-  'Erik',
-  'Gerhard',
-  'Gunnar',
-  'Gustaf',
-  'Harald',
-  'Herbert',
-  'Herman',
-  'Johan',
-  'John',
-  'Karl',
-  'Leif',
-  'Leonard',
-  'Martin',
-  'Matt',
-  'Mikael',
-  'Nikla',
-  'Norman',
-  'Oliver',
-  'Olof',
-  'Olvir',
-  'Otto',
-  'Patrik',
-  'Peter',
-  'Petter',
-  'Robert',
-  'Rupert',
-  'Sigurd',
-  'Simon',
+const attributes = [ 
+  {name: 'employee_id', alias: 'Employee Id', type: 'Integer',  value: '', operator: '0', condition: '0' },
+  {name: 'first_name', alias: 'First Name', type: 'String',  value: '', operator: '0', condition: '0' },
+  {name: 'last_name', alias: 'Last Name', type: 'String',  value: '', operator: '0', condition: '0' },
+  {name: 'job_id', alias: 'Job Id', type: 'Integer',  value: '', operator: '0', condition: '0' },
+  {name: 'email', alias: 'Email', type: 'Email',  value: '', operator: '0', condition: '0' },
+  {name: 'salary', alias: 'Salary', type: 'Float',  value: '', operator: '0', condition: '0' },
+  {name: 'department_id', alias: 'Department Id', type: 'Integer',  value: '', operator: '0', condition: '0' }
 ];
 
 export default class Tree extends Component {
@@ -61,25 +20,115 @@ export default class Tree extends Component {
     super(props);
 
     this.state = {
-      treeData: [{ title: 'Peter Olofsson' }, { title: 'Karl Johansson' }],
+      treeData: [{ key: attributes[0].name,
+                   condition: attributes[0].condition,
+                   name: attributes[0].name,  
+                   type: attributes[0].type, 
+                   operator: attributes[0].operator, 
+                   value: attributes[0].value,
+                   isGroup: true
+                  }]
     };
   }
+
+  onValueChange(event, getNodeKey, path, node, state){
+      const value = event.target.value;
+      this.setState(state => ({
+      treeData: changeNodeAtPath({
+        treeData: state.treeData,
+        path,
+        getNodeKey,
+        newNode: { ...node, value },
+      }),
+    }));  
+  }
+
+  onConditionChange(event, getNodeKey, path, node, state){
+    const condition = event.target.value;
+    this.setState(state => ({
+    treeData: changeNodeAtPath({
+      treeData: state.treeData,
+      path,
+      getNodeKey,
+      newNode: { ...node, condition },
+    }),
+  }));  
+}
+
+onOperatorChange(event, getNodeKey, path, node, state){
+  console.log(getNodeKey(path))
+  console.log(path)
+  console.log(node)
+  const operator = event.target.value;
+  this.setState(state => ({
+  treeData: changeNodeAtPath({
+    treeData: state.treeData,
+    path,
+    getNodeKey,
+    newNode: { ...node, operator },
+  }),
+  }));  
+}
+
+renderTreeNode(node, getNodeKey, path, state) {
+  if(node.isGroup){
+    return (
+      <div className="row" >
+        <div className="col-sm-6" >
+          group()
+        </div>
+      </div>
+    )
+  }else {
+    return (
+      <div className="row" >
+        <div className="col-sm-2" >
+          <select className="custom-select" value={node.condition} 
+                  onChange={(event, state) =>{this.onConditionChange(event, getNodeKey, path, node, state)} }>
+            <option value="0">AND</option>
+            <option value="1">OR</option>
+          </select>
+        </div>
+        <div className="col-sm-3">{node.name}</div>
+        <div className="col-sm-4" >
+          <select className="custom-select" value={node.operator}
+                  onChange={(event, state) =>{this.onOperatorChange(event, getNodeKey, path, node, state)} } >
+            <option value="0">Choose...</option>
+            <option value="1">Equals</option>
+            <option value="2">Not Equals</option>
+            <option value="3">Greather than</option>
+            <option value="4">Lesser than</option>
+          </select>
+        </div>
+        <div className="col-sm-3">
+          
+          <input value={node.value} 
+                  onChange={(event, state) =>{this.onValueChange(event, getNodeKey, path, node, state)} } />
+        </div>
+      </div>
+    )
+  }   
+}
+
 
   render() {
     const getNodeKey = ({ treeIndex }) => treeIndex;
     const getRandomName = () =>
-      firstNames[Math.floor(Math.random() * firstNames.length)];
-    const tableRows = () => firstNames.map((name) => {
-      return (<tr>
-                <td>{name} {name}sson</td>
-                <td>String</td>
+      attributes[Math.floor(Math.random() * attributes.length)];
+    const tableRows = () => attributes.map((attribute) => {
+      return (<tr key={attribute.name}>
+                <td>{attribute.name} </td>
+                <td>{attribute.type}</td>
                 <td><button className="btn btn-info"
                   onClick={() =>
                     this.setState(state => ({
                       treeData: state.treeData.concat({
-                        title: `${getRandomName()} ${getRandomName()}sson`,
-                        op: 1,
-                        value: ''
+                        key: `${getRandomName().name}`,
+                        condition: `${getRandomName().condition}`,
+                        name: `${getRandomName().name}`,
+                        type: `${getRandomName().type}`,
+                        value: `${getRandomName().value}`,
+                        operator: `${getRandomName().operator}`
                       }),
                     }))
                   }
@@ -89,6 +138,7 @@ export default class Tree extends Component {
               </tr>);
     });
     return (
+      
       <div className="container-fluid">
       <div className="row">
         <div className="col-lg-8 tree">
@@ -98,20 +148,7 @@ export default class Tree extends Component {
             generateNodeProps={({ node, path }) => ({
               title: (
                 <div className="container-fluid" >
-                <div className="row">
-                  <div className="col-sm-4">{node.title}</div>
-                  <div className="col-sm-4" >
-                    <select className="custom-select" value="0">
-                      <option value="0">Choose...</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
-                    </select>
-                  </div>
-                  <div className="col-sm-4">
-                    <input value={node.value} />
-                  </div>
-                </div>
+                {this.renderTreeNode(node, getNodeKey, path, this.state)}
                 </div>
               ),
               buttons: [
@@ -134,6 +171,26 @@ export default class Tree extends Component {
           />
         </div>
         <div className="col-lg-4 table-container">
+        <div className="row">
+          <button className="btn btn-info"
+                  onClick={() =>
+                    this.setState(state => ({
+                      treeData: state.treeData.concat({
+                        key: `${getRandomName().name}`,
+                        condition: `${getRandomName().condition}`,
+                        name: `${getRandomName().name}`,
+                        type: `${getRandomName().type}`,
+                        value: `${getRandomName().value}`,
+                        operator: `${getRandomName().operator}`,
+                        isGroup: true
+                      }),
+                    }))
+                  }
+          >
+            Add Group
+          </button>
+        </div>
+        <div className="row">
           <div className="table-responsive">
             <table className="table table-bordered">
               <thead>
@@ -147,6 +204,7 @@ export default class Tree extends Component {
               {tableRows()}
               </tbody>
             </table>
+          </div>
           </div>
         </div>
       </div>
