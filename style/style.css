@@ -11,11 +11,11 @@
 }
 
 .rst__rowLabel {
-  width: 90%
+  width: 75%
 }
 
 .rst__nodeContent {
-  width: 90% !important
+  width: 75% !important
 }
 
 .rst__moveHandle, .rst__loadingHandle {
