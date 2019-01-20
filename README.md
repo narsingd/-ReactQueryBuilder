@@ -1,4 +1,4 @@
-# ReactQueryBuilder
+# ReactQueryBuilder [![Build Status](https://travis-ci.com/narsingd/ReactQueryBuilder.svg?branch=master)](https://travis-ci.com/narsingd/ReactQueryBuilder)
 
 ### Getting Started
 
