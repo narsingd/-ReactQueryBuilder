@@ -25,5 +25,3 @@ For basic react project structure
 https://github.com/StephenGrider/ReduxSimpleStarter.git
 ```
 Test
-
-Added tagging
